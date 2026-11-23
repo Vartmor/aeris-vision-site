@@ -16,7 +16,7 @@ const { entries } = Astro.props as { entries: Entry[] };
             <strong>{entry.title}</strong>
             <p>{entry.intro}</p>
           </div>
-          {preview && <img src={href(`media/gunluk/${preview.file}`)} width="1008" height="576"
+          {preview && <img src={href(`media/gunluk/${preview.file}`)} width={preview.size?.width ?? 1008} height={preview.size?.height ?? 576}
                            loading="lazy" decoding="async" alt="" />}
         </a>
       </li>

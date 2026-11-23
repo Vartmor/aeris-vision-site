@@ -29,7 +29,8 @@ const { entry, newer, older } = Astro.props;
           {figure && (
             <figure class="article-figure">
               <img src={href(`media/gunluk/${figure.file}`)} alt={figure.alt}
-                   width="1008" height="576" loading="lazy" decoding="async" />
+                   width={figure.size?.width ?? 1008} height={figure.size?.height ?? 576}
+                   loading="lazy" decoding="async" />
               <figcaption>
                 {figure.caption}
                 <a href={href(`media/gunluk/${figure.file}`)}>Grafiği büyüt</a>

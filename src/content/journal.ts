@@ -2,6 +2,7 @@ type Figure = {
   file: string;
   alt: string;
   caption: string;
+  size?: { width: number; height: number };
 };
 
 type Section = {
@@ -20,6 +21,54 @@ export type Entry = {
 };
 
 export const journal: Entry[] = [
+  {
+    number: 6,
+    slug: 'guven-esigi',
+    title: 'Güven eşiğini iki kasırgada denedim',
+    intro: 'Hangi tahminleri incelemeye ayıracağımı 233 görüntüyle belirledim. Aynı eşikleri iki kasırgada denediğimde kabul edilen tahminlerdeki hata oranı değişti.',
+    sections: [
+      {
+        title: 'Eşikleri nasıl seçtim?',
+        paragraphs: [
+          'Midwest Flooding’den ayırdığım 233 görüntüde, geçerli hasar etiketi olan 3.302 binanın kırpımını kullandım. Ağırlıkları yeniden eğitmeden modelin ham puanlarına sıcaklık ölçekleme uyguladım. Sıcaklık 0,9793 çıktı. Bu işlem olasılık değerlerini değiştirdi, her binanın seçilen hasar sınıfı aynı kaldı.',
+          'Kalibrasyon verisinde tahminlerin yaklaşık yüzde 80’ini otomatik kabul edip kalanını incelemeye ayırmak istedim. Gerçek bina sınırlarıyla 0,4772, modelin bulduğu adaylarla 0,4692 güven eşiğini seçtim. Her iki eşiği de test görüntülerini çalıştırmadan önce sabitledim.',
+        ],
+      },
+      {
+        title: 'Gerçek bina sınırlarıyla ne gördüm?',
+        paragraphs: [
+          'İlk testte Hurricane Matthew’dan 223 görüntü kullandım. Bu olayın farklı bir sahnesi eğitimde vardı. İkinci testte ise eğitimden tamamen ayırdığım Hurricane Michael’ın 343 görüntüsünü kullandım. Grafiklerde Matthew’u ID, Michael’ı OOD olarak gösterdim.',
+          'Gerçek bina sınırlarını verdiğimde, aynı eşik Matthew’da örneklerin yüzde 79,3’ünü, Michael’da yüzde 82,9’unu kabul etti. Kabul ettiklerimin sırasıyla yüzde 74,9’u ve yüzde 40,6’sı hatalıydı. Bütün örnekleri kabul etseydim hata oranları yüzde 75,0 ve yüzde 44,7 olacaktı.',
+        ],
+        figure: {
+          file: '06-gercek-bina-sinirlari.png',
+          alt: 'Gerçek bina sınırlarıyla sabit eşikte Matthew’da yüzde 79,3 kapsama ve yüzde 74,9 hata, Michael’da yüzde 82,9 kapsama ve yüzde 40,6 hata.',
+          caption: 'Her noktada kabul ettiğim bina oranı ve kabul edilenlerdeki hata görülüyor. İki işaret, testlerden önce seçtiğim aynı eşiği gösteriyor.',
+          size: { width: 1230, height: 720 },
+        },
+      },
+      {
+        title: 'Bina sınırlarını model bulunca ne oldu?',
+        paragraphs: [
+          'Bu kez gerçek bina sınırlarını sınıflandırıcıya vermedim. İlk ağın bulduğu adayları kullandım. Matthew’da adayların yüzde 77,9’unu, Michael’da yüzde 81,1’ini kabul ettim. Puanlayabildiğim kabul edilmiş adayların hata oranı yüzde 87,4 ve yüzde 64,8 oldu.',
+          'Gerçek bir binayla eşleşmeyen adayı hata saydım. Hasar etiketi bulunmayan bir binayla eşleşen adayın sınıfını puanlamadım. Hiçbir adayla eşleşmeyen gerçek binaları ayrıca saydım. Matthew’da bu oran yüzde 79,9, Michael’da yüzde 43,4 çıktı.',
+        ],
+        figure: {
+          file: '06-modelin-bina-adaylari.png',
+          alt: 'Modelin bulduğu adaylarda sabit eşikte Matthew’da yüzde 77,9 kapsama ve yüzde 87,4 hata, Michael’da yüzde 81,1 kapsama ve yüzde 64,8 hata.',
+          caption: 'Kapsama hesabına modelin ürettiği bütün adaylar girdi. İşaretler, adaylar için ayrı seçtiğim sabit eşiği gösteriyor.',
+          size: { width: 1230, height: 720 },
+        },
+      },
+      {
+        title: 'Kalibrasyon testte neye yaradı?',
+        paragraphs: [
+          'Modelin söylediği güven ile gerçekleşen doğruluk arasındaki farkı ECE ile ölçtüm. Gerçek sınıfa düşük olasılık verildiğinde artan NLL’yi de hesapladım. Kalibrasyon verisinde ikisi de biraz düştü. Testlerde ikisi de yükseldi. Örneğin ECE, Matthew’da 0,4304’ten 0,4353’e, Michael’da 0,1461’den 0,1511’e çıktı.',
+          'Michael’daki daha düşük hatayı tek başına yeni afete bağlayamam. Matthew’daki bina kırpımlarının çoğu hafif hasarlı, Michael’dakilerin çoğu hasarsızdı. İki testte sırasıyla iki ve bir bağımsız sahne grubum olduğu için güven aralığı raporlamadım. Bu iki koşuda her beş tahminden yaklaşık dördünü kabul etmek mümkün oldu, ama kabul edilenlerdeki hata oranları yüksek kaldı.',
+        ],
+      },
+    ],
+  },
   {
     number: 5,
     slug: 'm0-cekirdek',
@@ -198,3 +247,5 @@ export const journal: Entry[] = [
     ],
   },
 ];
+
+export const latestEntry = journal[0];

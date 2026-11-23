@@ -9,6 +9,7 @@ import '@fontsource/noto-sans-mono/latin-400.css';
 import '@fontsource/noto-sans-mono/latin-ext-400.css';
 import '../styles/brand.css';
 import '../styles/site.css';
+import { latestEntry } from '../content/journal';
 import { href } from '../lib/url';
 
 interface Props {
@@ -62,7 +63,7 @@ const image = new URL(href('media/narrowsburg-share.jpg'), Astro.site);
         <a href={href('#yontem')}>Yöntem</a>
         <a href={href('#sonuclar')}>Sonuçlar</a>
       </nav>
-      <a class="header-cta" href={href('gunluk/m0-cekirdek/')}>Son yazı</a>
+      <a class="header-cta" href={href(`gunluk/${latestEntry.slug}/`)}>Son yazı</a>
     </div>
   </header>
   <main id="icerik" tabindex="-1"><slot /></main>
