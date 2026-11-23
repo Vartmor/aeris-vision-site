@@ -1,0 +1,40 @@
+/* AERIS VISION / FIELD ARCHIVE / approved identity, 2026-11-23 */
+/* Font files intentionally not redistributed. Load fonts independently. */
+:root, [data-aeris-theme="light"] {
+  --aeris-background: #F1E9E4;
+  --aeris-surface: #FFFFFF;
+  --aeris-text: #3A2030;
+  --aeris-textSecondary: #705363;
+  --aeris-border: #D8C8CB;
+  --aeris-button: #752D4E;
+  --aeris-buttonText: #FFFFFF;
+  --aeris-accent: #D6996D;
+  --aeris-brand-ink: #3A2030;
+  --aeris-brand-primary: #752D4E;
+  --aeris-brand-accent: #D6996D;
+  --aeris-font-display: "Noto Serif", Georgia, serif;
+  --aeris-font-body: Lato, Arial, sans-serif;
+  --aeris-font-data: "Noto Sans Mono", ui-monospace, monospace;
+  --aeris-radius-sm: 4px; --aeris-radius-md: 8px;
+  --aeris-space-1: 4px; --aeris-space-2: 8px; --aeris-space-3: 12px;
+  --aeris-space-4: 16px; --aeris-space-6: 24px; --aeris-space-8: 32px;
+}
+[data-aeris-theme="dark"] {
+  --aeris-background: #281A24;
+  --aeris-surface: #362634;
+  --aeris-text: #F6F0EC;
+  --aeris-textSecondary: #DCC7D5;
+  --aeris-border: #8A7282;
+  --aeris-button: #E5AD89;
+  --aeris-buttonText: #281A24;
+  --aeris-accent: #E5AD89;
+}
+/* Damage categories ALWAYS require text/shape, not color alone. */
+:root { --aeris-status-no-visible-damage: #356A62; }
+:root { --aeris-status-minor-damage: #99611F; }
+:root { --aeris-status-major-damage: #994D43; }
+:root { --aeris-status-destroyed: #6D2A45; }
+:root { --aeris-status-manual-review: #684D91; }
+ .aeris-surface {background:var(--aeris-surface); color:var(--aeris-text);}
+.aeris-label { font-family:var(--aeris-font-data); font-variant-numeric:tabular-nums; }
+.aeris-button { background:var(--aeris-button); color:var(--aeris-buttonText); border:0; border-radius:var(--aeris-radius-sm); padding:12px 18px; font:700 14px var(--aeris-font-body); }

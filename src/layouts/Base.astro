@@ -1,0 +1,108 @@
+---
+import '@fontsource/noto-serif/latin-800.css';
+import '@fontsource/noto-serif/latin-ext-800.css';
+import '@fontsource/lato/latin-400.css';
+import '@fontsource/lato/latin-ext-400.css';
+import '@fontsource/lato/latin-700.css';
+import '@fontsource/lato/latin-ext-700.css';
+import '@fontsource/noto-sans-mono/latin-400.css';
+import '@fontsource/noto-sans-mono/latin-ext-400.css';
+import '../styles/brand.css';
+import '../styles/site.css';
+import { href } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  home?: boolean;
+}
+
+const {title, description, home = false} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const image = new URL(href('media/share.png'), Astro.site);
+---
+<!doctype html>
+<html lang="tr" data-type="software" data-motion="quiet" data-radius="sharp">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="description" content={description} />
+  <meta name="theme-color" content={home ? '#281A24' : '#F1E9E4'} />
+  <meta name="page-type" content="software" />
+  <meta name="site-kind" content="software" />
+  <link rel="canonical" href={canonical} />
+  <link rel="icon" type="image/png" href={href('brand/symbol-32.png')} />
+  <link rel="apple-touch-icon" href={href('brand/apple-touch-icon.png')} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="tr_TR" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={image} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>{title}</title>
+</head>
+<body class:list={[{ 'home-page': home }]}>
+  <a class="skip-link" href="#icerik">İçeriğe geç</a>
+  <header class:list={['site-header', { 'site-header--dark': home }]} data-site-header>
+    <div class="wrap header-inner">
+      <a class="brand-logo" href={href()} aria-label="AERIS VISION ana sayfa">
+        <img src={href(home ? 'brand/horizontal-reversed.svg' : 'brand/horizontal.svg')}
+             alt="AERIS VISION" width="208" height="43" />
+      </a>
+      <button class="menu-toggle" type="button" aria-label="Gezinme menüsü" aria-expanded="false"
+              aria-controls="site-nav" data-menu-toggle>
+        <span>Menü</span><span class="menu-icon" aria-hidden="true"></span>
+      </button>
+      <nav id="site-nav" aria-label="Ana gezinme" class="site-nav">
+        <a href={href('gunluk/')}>Günlük</a>
+        <a href={href('#yontem')}>Yöntem</a>
+        <a href={href('#sonuclar')}>Sonuçlar</a>
+      </nav>
+      <a class="header-cta" href={href('gunluk/m0-cekirdek/')}>M0 raporu <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+  <main id="icerik"><slot /></main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-main">
+        <div>
+          <img src={href('brand/horizontal-reversed.svg')} alt="AERIS VISION" width="208" height="43" />
+          <p>Uydu görüntüleriyle afet sonrası bina hasarı üzerine bir araştırma günlüğü.</p>
+        </div>
+        <nav aria-label="Alt gezinme">
+          <a href={href('gunluk/')}>Tüm saha notları</a>
+          <a href={href('#sonuclar')}>Doğrulama sonuçları</a>
+          <a href="https://github.com/Vartmor/aeris-vision-site">Site kaynak kodu <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <div class="footer-meta"><span>FIELD ARCHIVE · 2026</span><a href="#icerik">Yukarı dön <span aria-hidden="true">↑</span></a></div>
+    </div>
+  </footer>
+  <script>
+    const header = document.querySelector<HTMLElement>('[data-site-header]');
+    const button = header?.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+    const nav = header?.querySelector<HTMLElement>('#site-nav');
+    if (header && button && nav) {
+      const mobile = matchMedia('(max-width: 740px)');
+      const setOpen = (open: boolean, restore = false) => {
+        header.dataset.open = String(open);
+        button.setAttribute('aria-expanded', String(open));
+        if (open) nav.querySelector('a')?.focus();
+        else if (restore) button.focus();
+      };
+      button.addEventListener('click', () => setOpen(header.dataset.open !== 'true', true));
+      nav.addEventListener('click', (event) => {
+        if (mobile.matches && event.target instanceof Element && event.target.closest('a')) setOpen(false);
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && header.dataset.open === 'true') setOpen(false, true);
+      });
+      document.addEventListener('pointerdown', (event) => {
+        if (header.dataset.open === 'true' && event.target instanceof Node && !header.contains(event.target)) setOpen(false);
+      });
+      mobile.addEventListener('change', () => setOpen(false));
+    }
+  </script>
+</body>
+</html>

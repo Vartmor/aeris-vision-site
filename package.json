@@ -1,0 +1,21 @@
+{
+  "name": "aeris-vision-field-archive",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "7.1.9",
+    "@fontsource/lato": "5.3.0",
+    "@fontsource/noto-sans-mono": "5.3.0",
+    "@fontsource/noto-serif": "5.3.0",
+    "astro": "7.4.13",
+    "framer-motion": "14.14.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

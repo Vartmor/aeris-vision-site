@@ -1,0 +1,40 @@
+---
+import Base from '../../layouts/Base.astro';
+import { journal } from '../../content/journal';
+import { href } from '../../lib/url';
+
+export function getStaticPaths() {
+  return journal.map((entry, index) => ({
+    params: { slug: entry.slug },
+    props: { entry, newer: journal[index - 1], older: journal[index + 1] },
+  }));
+}
+const { entry, newer, older } = Astro.props;
+---
+<Base title={`${entry.title} · AERIS VISION`} description={entry.intro}>
+  <article class="journal-article">
+    <header class="page-intro article-intro wrap">
+      <a class="text-link page-back" href={href('gunluk/')}>← Geliştirme günlüğü</a>
+      <div class="article-meta"><span>{entry.target} hedefi</span><span>{entry.stage}</span></div>
+      <h1>{entry.title}</h1>
+      <p>{entry.intro}</p>
+    </header>
+    <div class="wrap article-content">
+      <dl class="article-facts" aria-label="Öne çıkan ölçümler">
+        {entry.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
+      </dl>
+      <div class="prose">
+        {entry.sections.map((section) => (
+          <section>
+            <h2>{section.title}</h2>
+            {section.paragraphs.map((p) => <p>{p}</p>)}
+          </section>
+        ))}
+      </div>
+      <nav class="article-neighbours" aria-label="Günlük yazıları">
+        {older && <a href={href(`gunluk/${older.slug}/`)}><small>← Önceki kayıt</small><strong>{older.title}</strong></a>}
+        {newer && <a href={href(`gunluk/${newer.slug}/`)}><small>Sonraki kayıt →</small><strong>{newer.title}</strong></a>}
+      </nav>
+    </div>
+  </article>
+</Base>
