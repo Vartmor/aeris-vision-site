@@ -2,11 +2,10 @@
 import Base from '../layouts/Base.astro';
 import { href } from '../lib/url';
 ---
-<Base title="Sayfa bulunamadı · AERIS VISION" description="AERIS VISION saha arşivinde aradığınız sayfa bulunamadı.">
+
+<Base title="Sayfa bulunamadı · AERIS VISION" description="Yazıları proje günlüğünden açabilirsin.">
   <section class="page-intro wrap greeter">
-    <p class="eyebrow">404</p>
-    <h1>Sayfa bulunamadı.</h1>
-    <p>Yayımlanan tüm kayıtları geliştirme günlüğünde bulabilirsin.</p>
-    <a class="button button--ink" href={href('gunluk/')}>Günlüğe git ↗</a>
+    <h1>Sayfa bulunamadı</h1>
+    <a class="text-link" href={href('gunluk/')}>Proje günlüğüne dön</a>
   </section>
 </Base>

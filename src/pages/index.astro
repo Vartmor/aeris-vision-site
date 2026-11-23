@@ -1,63 +1,60 @@
 ---
 import Base from '../layouts/Base.astro';
-import HeroCopy from '../components/HeroCopy';
 import HeroScene from '../components/HeroScene';
 import SceneCompare from '../components/SceneCompare';
 import EntryList from '../components/EntryList.astro';
-import { journal, latest } from '../content/journal';
+import { journal } from '../content/journal';
 import { href } from '../lib/url';
 
 const metrics = [
-  { label: 'Piksel lokalizasyon F1', display: '0,778', fill: 77.8 },
-  { label: 'Bire bir bina yakalama oranı', display: '%61,7', fill: 61.7 },
-  { label: 'Hasar F1 · Tahmin edilen sınırlarla', display: '0,090', fill: 9.0 },
+  { label: 'Bina pikselleri için F1', display: '0,778', fill: 77.8 },
+  { label: 'Eşleşen binaların oranı', display: '%61,7', fill: 61.7 },
+  { label: 'Hasar F1 · Modelin bulduğu sınırlarla', display: '0,090', fill: 9.0 },
   { label: 'Hasar F1 · Gerçek sınırlarla', display: '0,118', fill: 11.8 },
 ];
 ---
-<Base title="AERIS VISION · Field Archive" description="Uydu görüntüleriyle afet sonrası bina hasarını araştıran AERIS VISION projesinin görsel günlüğü." home>
-  <section class="hero" data-aeris-theme="dark" data-enter aria-label="AERIS VISION">
+
+<Base title="Proje günlüğü · AERIS VISION" description="Uydu görüntülerinden afet sonrası bina hasarını incelemek için yaptığım denemeler ve ölçtüğüm sonuçlar." home>
+  <section class="hero" data-aeris-theme="dark" aria-labelledby="project-title">
     <HeroScene image={href('media/narrowsburg-delaware.webp')} client:load />
     <div class="hero-wash" aria-hidden="true"></div>
     <div class="wrap hero-inner">
-      <HeroCopy journalUrl={href('gunluk/')} client:load />
+      <div class="hero-copy">
+        <h1 id="project-title">Proje günlüğü</h1>
+        <p class="hero-description">Uydu görüntülerinden afet sonrası binaların ne kadar hasar gördüğünü anlamaya çalışıyorum. Veriyi nasıl hazırladığımı, modeli nasıl eğittiğimi ve nerede yanıldığını burada yazıyorum.</p>
+        <div class="hero-actions">
+          <a class="button button--paper" href={href('gunluk/')}>Yazıları oku</a>
+          <a class="hero-link" href="#sonuclar">Sonuçlara bak</a>
+        </div>
+      </div>
       <div class="hero-foot">
-        <a href={href('gunluk/m0-cekirdek/')}><span class="annotation-square" aria-hidden="true"></span> M0 · Çalışan çekirdek</a>
+        <span>Narrowsburg, New York</span>
         <a href="https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer">Hava fotoğrafı · USDA NAIP</a>
       </div>
     </div>
   </section>
 
   <section class="section archive-section" id="gunluk" aria-labelledby="archive-title">
-    <div class="wrap">
+    <div class="wrap archive-content">
       <div class="section-heading">
-        <div><p class="eyebrow">Saha notları</p><h2 id="archive-title">Geliştirme günlüğü</h2></div>
-        <a class="text-link" href={href('gunluk/')}>Tüm yazılar <span aria-hidden="true">↗</span></a>
+        <h2 id="archive-title">Yazılar</h2>
+        <a class="text-link" href={href('gunluk/')}>Günlüğü aç</a>
       </div>
-      <div class="archive-grid">
-        <a class="feature-article" href={href(`gunluk/${latest.slug}/`)}>
-          <div class="feature-top"><span>{latest.stage}</span><span>{latest.target} hedefi</span></div>
-          <h3>{latest.title}</h3>
-          <p>{latest.intro}</p>
-          <div class="feature-bottom"><span>Raporu oku</span><span class="feature-arrow" aria-hidden="true">↗</span></div>
-        </a>
-        <EntryList entries={journal.slice(1)} />
-      </div>
+      <EntryList entries={journal} />
     </div>
   </section>
 
   <section class="section method-section" id="yontem" aria-labelledby="method-title" data-aeris-theme="dark">
     <div class="wrap">
-      <div class="section-heading">
-        <div><p class="eyebrow">Yöntem</p><h2 id="method-title">Görüntüden bina adayına</h2></div>
-      </div>
+      <div class="section-heading"><h2 id="method-title">İki modeli nasıl kullandım?</h2></div>
       <div class="method-grid">
         <div class="method-copy">
-          <p class="method-lead">Önce binanın yerini buluyor, sonra afet sonrası görüntüdeki görünür hasarı inceliyoruz.</p>
           <dl class="method-steps">
-            <div><dt>Bina sınırı</dt><dd>U-Net, afet öncesi görüntüde bina piksellerini bulur.</dd></div>
-            <div><dt>Hasar sınıfı</dt><dd>ResNet18, adayın afet sonrası kırpımını dört sınıfta değerlendirir.</dd></div>
-            <div><dt>Doğrulama</dt><dd>Adayları gerçek bina sınırlarıyla eşleştirip kaçırılan ve birleşen binaları sayarız.</dd></div>
+            <div><dt>Binaları buldum</dt><dd>U-Net’e afet öncesi görüntüyü verdim. Model bina olabilecek pikselleri işaretledi.</dd></div>
+            <div><dt>Hasarı sınıflandırdım</dt><dd>Bulduğu her binayı afet sonrası görüntüden kırpıp ResNet18’e verdim. Model dört hasar sınıfından birini seçti.</dd></div>
+            <div><dt>Hataları saydım</dt><dd>Adayları etiketli binalarla eşleştirdim. Bazı binalar hiç bulunmadı, bazıları aynı adayda birleşti.</dd></div>
           </dl>
+          <p class="method-caption">Hava fotoğrafına örnek bina sınırları çizdim. Sürgüyü kaydırarak çizgileri görebilirsin.</p>
         </div>
         <SceneCompare image={href('media/narrowsburg-detail.webp')} compactImage={href('media/narrowsburg-detail-724.webp')} client:visible />
       </div>
@@ -67,10 +64,10 @@ const metrics = [
   <section class="section result-section" id="sonuclar" aria-labelledby="results-title">
     <div class="wrap">
       <div class="section-heading">
-        <div><p class="eyebrow">M0 doğrulaması</p><h2 id="results-title">Sonuçlar ve hatalar</h2></div>
-        <a class="text-link" href={href('gunluk/uctan-uca/')}>Değerlendirme notu <span aria-hidden="true">↗</span></a>
+        <h2 id="results-title">İlk ölçümlerim</h2>
+        <a class="text-link" href={href('gunluk/uctan-uca/')}>Ölçümü nasıl yaptım?</a>
       </div>
-      <p class="section-summary">Ayrılmış Hurricane Florence sahnesindeki 309 görüntüden. Hasar skoru, aynı hedef maskelerle iki ayrı koşulda hesaplandı.</p>
+      <p class="section-summary">Hurricane Florence’tan ayırdığım 309 görüntüyü kullandım. Hasar F1’ini aynı hedef maskelerle, modelin bulduğu ve gerçek bina sınırları için ayrı ayrı hesapladım.</p>
       <div class="result-grid">
         <div>
           <dl class="metric-list">
@@ -80,13 +77,11 @@ const metrics = [
               </div>
             ))}
           </dl>
-          <div class="metric-axis" aria-hidden="true"><span>0%</span><span>100%</span></div>
+          <div class="metric-axis" aria-hidden="true"><span>%0</span><span>%100</span></div>
         </div>
-        <aside class="field-note" aria-label="Ağır hasarda görülen hata">
-          <span class="annotation-square" aria-hidden="true"></span>
-          <p class="eyebrow">Ağır hasarda kaçırma</p>
-          <p class="note-number"><strong>661</strong> / 1.299</p>
-          <p>Ağır hasarlı veya yıkılmış bu binalar hasarsız tahmin edildi. Sonuçlar, insan doğrulaması gerektiren araştırma çıktılarıdır.</p>
+        <aside class="field-note">
+          <h3>En sık gördüğüm hata</h3>
+          <p>Ağır hasarlı veya yıkılmış 1.299 binanın 661’ine model hasarsız dedi.</p>
         </aside>
       </div>
     </div>

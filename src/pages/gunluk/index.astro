@@ -1,18 +1,12 @@
 ---
 import Base from '../../layouts/Base.astro';
 import EntryList from '../../components/EntryList.astro';
-import { journal, latest } from '../../content/journal';
-import { href } from '../../lib/url';
+import { journal } from '../../content/journal';
 ---
-<Base title="Geliştirme günlüğü · AERIS VISION" description="Veri denetiminden çalışan M0’a, AERIS VISION araştırmasının tamamlanan dönüm noktaları.">
-  <section class="page-intro wrap" aria-labelledby="journal-title">
-    <a class="text-link page-back" href={href()}>← Ana sayfa</a>
-    <p class="eyebrow">Field Archive</p>
-    <h1 id="journal-title">Geliştirme günlüğü</h1>
-    <p>Veri denetiminden çalışan ilk çıkarım hattına kadar her kayıtta neyi denediğimizi, neyin çalıştığını ve hangi hataları gördüğümüzü yazıyoruz.</p>
-  </section>
-  <section class="wrap journal-body" aria-labelledby="journal-entries">
-    <div class="section-heading"><h2 id="journal-entries">Saha notları</h2><a class="text-link" href={href(`gunluk/${latest.slug}/`)}>Son yazıya git ↗</a></div>
+
+<Base title="Proje günlüğü · AERIS VISION" description="xBD’yi nasıl hazırladığımı, modelleri nasıl eğittiğimi ve ölçtüğüm sonuçları yazıyorum.">
+  <section class="wrap journal-body" aria-labelledby="journal-title">
+    <h1 id="journal-title">Proje günlüğü</h1>
     <EntryList entries={journal} />
   </section>
 </Base>

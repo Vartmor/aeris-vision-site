@@ -9,32 +9,39 @@ export function getStaticPaths() {
     props: { entry, newer: journal[index - 1], older: journal[index + 1] },
   }));
 }
+
 const { entry, newer, older } = Astro.props;
 ---
-<Base title={`${entry.title} · AERIS VISION`} description={entry.intro}>
-  <article class="journal-article">
-    <header class="page-intro article-intro wrap">
-      <a class="text-link page-back" href={href('gunluk/')}>← Geliştirme günlüğü</a>
-      <div class="article-meta"><span>{entry.target} hedefi</span><span>{entry.stage}</span></div>
-      <h1>{entry.title}</h1>
+
+<Base title={`${entry.number}. ${entry.title} · AERIS VISION`} description={entry.intro}>
+  <article class="wrap reading-column">
+    <header class="page-intro article-intro">
+      <a class="text-link page-back" href={href('gunluk/')}>← Proje günlüğü</a>
+      <h1><span class="article-number">{entry.number}.</span> {entry.title}</h1>
       <p>{entry.intro}</p>
     </header>
-    <div class="wrap article-content">
-      <dl class="article-facts" aria-label="Öne çıkan ölçümler">
-        {entry.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
-      </dl>
-      <div class="prose">
-        {entry.sections.map((section) => (
-          <section>
-            <h2>{section.title}</h2>
-            {section.paragraphs.map((p) => <p>{p}</p>)}
-          </section>
-        ))}
-      </div>
-      <nav class="article-neighbours" aria-label="Günlük yazıları">
-        {older && <a href={href(`gunluk/${older.slug}/`)}><small>← Önceki kayıt</small><strong>{older.title}</strong></a>}
-        {newer && <a href={href(`gunluk/${newer.slug}/`)}><small>Sonraki kayıt →</small><strong>{newer.title}</strong></a>}
-      </nav>
+    <div class="prose">
+      {entry.sections.map(({ title, paragraphs, figure, code }) => (
+        <section>
+          <h2>{title}</h2>
+          {paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+          {code && <pre><code>{code}</code></pre>}
+          {figure && (
+            <figure class="article-figure">
+              <img src={href(`media/gunluk/${figure.file}`)} alt={figure.alt}
+                   width="1008" height="576" loading="lazy" decoding="async" />
+              <figcaption>
+                {figure.caption}
+                <a href={href(`media/gunluk/${figure.file}`)}>Grafiği büyüt</a>
+              </figcaption>
+            </figure>
+          )}
+        </section>
+      ))}
     </div>
+    <nav class="article-neighbours" aria-label="Diğer yazılar">
+      {older && <a href={href(`gunluk/${older.slug}/`)}><small>← Önceki yazı</small><strong>{older.number}. {older.title}</strong></a>}
+      {newer && <a href={href(`gunluk/${newer.slug}/`)}><small>Sonraki yazı →</small><strong>{newer.number}. {newer.title}</strong></a>}
+    </nav>
   </article>
 </Base>

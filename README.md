@@ -1,4 +1,4 @@
-# AERIS VISION · Field Archive
+# AERIS VISION · Proje günlüğü
 
 Uydu görüntüleriyle afet sonrası görünür bina hasarını araştıran AERIS VISION projesinin Türkçe geliştirme günlüğü.
 
@@ -13,7 +13,7 @@ npm ci
 npm run dev
 ```
 
-Yeni yazıyı `src/content/journal.ts` dosyasının başına ekle. Günlük listesi, ana sayfa ve yazı sayfası aynı kayıttan üretilir. Sonuçları güncellerken veri kümesini, değerlendirme koşulunu ve paydaları birlikte belirt.
+Yeni yazıyı `src/content/journal.ts` dosyasının başına sıradaki yazı numarasıyla ekle. Günlük listesi ve yazı sayfası aynı kayıttan üretilir. Yazıdaki grafikler `public/media/gunluk/` klasöründe durur.
 
 ## Yayın
 

@@ -1,94 +1,200 @@
+type Figure = {
+  file: string;
+  alt: string;
+  caption: string;
+};
+
+type Section = {
+  title: string;
+  paragraphs: string[];
+  figure?: Figure;
+  code?: string;
+};
+
 export type Entry = {
+  number: number;
   slug: string;
-  stage: string;
-  target: string;
   title: string;
   intro: string;
-  facts: { value: string; label: string }[];
-  sections: { title: string; paragraphs: string[] }[];
+  sections: Section[];
 };
 
 export const journal: Entry[] = [
   {
-    slug: 'm0-cekirdek', stage: 'M0 · G3', target: '3 Aralık',
-    title: 'İki görüntüden çalışan bir hat',
-    intro: 'Temiz bir CPU kurulumunda iki RGB görüntüyü verdik. Çıkarım komutu 97 bina adayı, bir JSON kaydı ve iki piksel maskesi üretti.',
-    facts: [{value:'97',label:'CPU çıktısındaki bina adayı'},{value:'309',label:'Doğrulama görüntüsü'},{value:'92',label:'Geçen test'}],
+    number: 5,
+    slug: 'm0-cekirdek',
+    title: 'Çıkarım komutunu temiz bir kurulumda denedim',
+    intro: 'Projeyi yeni bir Python ortamına kurdum ve CPU’da iki görüntüyle çalıştırdım. Komut 97 bina adayı ve üç çıktı dosyası verdi.',
     sections: [
-      {title:'Modeli yeniden kurduk',paragraphs:[
-        'Paketi proje klasörü dışında, temiz bir Python ortamına kurduk. Afet öncesi ve sonrası iki RGB görüntüyle seçilen iki model ağırlığını kullandık. Çıkarım komutu, adayların piksel kutularını ve dört sınıfın ham skorlarını JSON’a yazdı.',
-        'Bina sınırları ve sınıf değerleri üretilen PNG’lerle karşılaştırıldı. Çıktıdaki güven alanı ham softmax olasılığıdır. İnsan inceleme eşiği kalibrasyon aşamasında belirlenecek.'
-      ]},
-      {title:'Aynı sahnede tekrar ölçtük',paragraphs:[
-        'Hurricane Florence doğrulama bölümündeki 309 görüntü yeniden işlendi. Üretilen 1.854 maske ve skorlar önceki doğrulamayla birebir eşleşti. Dondurulmuş veri bölmesi ve 2.799 görüntü çiftinin bütünlüğü tekrar denetlendi.',
-        'Tahmin edilen bina sınırlarıyla piksel hasar F1’i 0,090. Gerçek bina sınırları verildiğinde 0,118. Bu iki ölçüm, bina tespiti ve hasar sınıflandırmasının hatalarını ayrı ayrı incelememizi sağlıyor.'
-      ]},
+      {
+        title: 'Komutu nasıl çalıştırdım?',
+        paragraphs: [
+          'Paketi kendi geliştirme klasörümün dışında kurdum. Böylece komutun o klasördeki dosyalara yanlışlıkla bağlı olup olmadığını kontrol edebildim. CPU için PyTorch kurdum ve ayar dosyasında eğittiğim iki modelin ağırlıklarını gösterdim.',
+          'Komuta aynı boyutta ve birbirine hizalanmış iki RGB görüntü verdim. Biri afet öncesine, diğeri sonrasına ait. Alttaki komutta kullandığım dosya yollarını örnek adlarla gösterdim.',
+        ],
+        code: 'aeris infer --config configs/inference.yaml --device cpu \\\n  --pre once.png --post sonra.png --output cikti/',
+      },
+      {
+        title: 'Çıktıda ne vardı?',
+        paragraphs: [
+          'prediction.json dosyasında 97 adayın kutusu, piksel alanı ve hasar tahmini vardı. localization.png bina piksellerini, damage.png ise aynı adayların tahmin edilen hasar sınıflarını gösteriyor. JSON’daki kutuları ve sınıf numaralarını iki PNG ile karşılaştırdım.',
+          'Bu görüntü çiftinde model 78 adayı hasarsız, 2 adayı hafif hasarlı, 4 adayı ağır hasarlı ve 13 adayı yıkılmış olarak işaretledi. Grafikteki sayılar modelin verdiği etiketler. Bu denemede doğruluğu ölçmek için gerçek etiket kullanmadım.',
+        ],
+        figure: {
+          file: '05-cpu-tahminleri.png',
+          alt: 'CPU denemesinde 78 hasarsız, 2 hafif hasarlı, 4 ağır hasarlı ve 13 yıkılmış tahmini.',
+          caption: 'Tek görüntü çiftinden gelen 97 adayın tahmin edilen sınıfları.',
+        },
+      },
+      {
+        title: 'Önceki ölçümleri yeniden alabildim mi?',
+        paragraphs: [
+          'Hurricane Florence doğrulama bölümündeki 309 görüntüyü tekrar çalıştırdım. Toplam 1.854 maske ve skorlar önceki koşuyla eşleşti. Testleri de yeniden koştum. PyTorch ortamında 92 test geçti.',
+          'Piksel düzeyinde harmonik hasar F1’i, modelin bulduğu sınırlarla 0,090, gerçek sınırlarla 0,118 çıktı. Hasar sınıflandırıcısının iyileştirmeye ihtiyacı var. Sonraki adımda modelin ham güven puanlarının hangi durumlarda yanıltıcı olduğunu inceleyeceğim.',
+        ],
+        figure: {
+          file: '05-hasar-f1.png',
+          alt: '0 ile 1 ölçeğinde harmonik hasar F1, modelin bulduğu sınırlarla 0,090 ve gerçek sınırlarla 0,118.',
+          caption: 'Aynı 309 görüntü ve hedef maskelerle yaptığım iki ölçüm. Grafiğin ölçeği 0–1.',
+        },
+      },
     ],
   },
   {
-    slug: 'uctan-uca', stage: 'İki aşamalı hat', target: '29–30 Kasım',
-    title: 'Bina sınırından hasar maskesine',
-    intro: 'Lokalizasyon ve hasar ağını bağladık. Modelin bulduğu binalarla gerçek poligonları aynı doğrulama sahnesinde karşılaştırdık.',
-    facts: [{value:'%61,7',label:'Bire bir bina yakalama'},{value:'330',label:'Birleşik aday'},{value:'0,296',label:'xView2 uyumlu toplam skor'}],
+    number: 4,
+    slug: 'uctan-uca',
+    title: 'İki modeli birleştirip hataları saydım',
+    intro: 'İlk ağın bulduğu binaları hasar modeline verdim. Bina sınırları değişince sonuçların ne kadar değiştiğine baktım.',
     sections: [
-      {title:'Bir piksel maskesinden bina adayı',paragraphs:[
-        '0,40 bina olasılığı eşiğiyle oluşan maske, sekiz komşuluklu bağlı bileşenlere ayrıldı. Doğrulama üzerinde karşılaştırılan beş alan sınırı arasında 32 piksel seçildi.',
-        'Her aday için afet sonrası görüntüden bir kırpım alındı. Hasar sınıfı, adayın piksel maskesine geri yazıldı. Ortaya çıkan dosyalar resmî xView2 puanlayıcısıyla karşılaştırıldı ve yedi referans skor alanı eşleşti.'
-      ]},
-      {title:'Birleşen ve kaçırılan binalar',paragraphs:[
-        '5.770 gerçek binanın 3.561’i bir adayla bire bir eşleşti. 330 birleşik aday 784 farklı binayı kapsadı. Birleşme ve bulunamama, ağır hasar tablosunda ayrı ayrı sayıldı.',
-        '1.299 ağır hasarlı ya da yıkılmış binanın 661’i hasarsız tahmin edildi. Bu hata, görünür hasarın uydu görüntüsünden sınıflandırılmasının model için hâlâ güç olduğunu gösteriyor.'
-      ]},
+      {
+        title: 'Piksel maskesinden bina adayına',
+        paragraphs: [
+          'Bir önceki denemede hasar modeline gerçek bina sınırlarını vermiştim. Bu kez afet öncesi görüntüden çıkan U-Net maskesini kullandım. Köşeden veya kenardan birbirine değen bina piksellerini aynı adayda topladım, sonra bu alanı afet sonrası görüntüden kırptım.',
+          'Maskede birkaç pikselden oluşan adaylar da vardı. En küçük aday alanını 1, 4, 8, 16 ve 32 piksel olarak denedim. En yüksek piksel F1’i 32 ile geldi, ama fark çok küçüktü. Aday sayısı 5.989’dan 5.554’e düştü.',
+        ],
+        figure: {
+          file: '04-alan-filtresi.png',
+          alt: 'Alan alt sınırı 1, 4, 8, 16 ve 32 pikselken sırasıyla 5.989, 5.968, 5.894, 5.763 ve 5.554 aday kalıyor.',
+          caption: 'Beş alan alt sınırıyla kaç aday kaldığını saydım.',
+        },
+      },
+      {
+        title: 'Hatalar nerede birikiyor?',
+        paragraphs: [
+          'Adayları gerçek binalarla bire bir eşleştirdim. Kesişim alanı bölü birleşim alanı (IoU) en az 0,50 olan çiftleri, en yüksek IoU’dan başlayarak eşleştirdim. 5.770 etiketli binanın 3.561’i bu kuralla eşleşti. Ayrıca tek bir adayın birden çok binayı kapladığı 330 birleşme buldum.',
+          'Özellikle ağır hasarlı ve yıkılmış binalara baktım. 1.299 binanın 301’i bulunamadı, 172’si birleşik adaya girdi ve 661’i hasarsız tahmin edildi. Bu üç durumu ayrı saymak, hatanın hangi aşamada ortaya çıktığını görmeme yardım etti.',
+          'Aynı hedef maskelerle iki koşuyu xView2 puanlayıcısında karşılaştırdım. Harmonik piksel hasar F1’i modelin sınırlarıyla 0,0898, gerçek sınırlarla 0,1177 çıktı.',
+        ],
+        figure: {
+          file: '04-agir-hasar.png',
+          alt: '1.299 ağır hasarlı veya yıkılmış binada 301 bulunamadı, 172 birleşik adayda kaldı, 661 hasarsız, 58 hafif, 28 ağır ve 79 yıkılmış olarak tahmin edildi.',
+          caption: 'Gerçekte ağır hasarlı veya yıkılmış 1.299 binanın her birini bir kez saydım.',
+        },
+      },
     ],
   },
   {
-    slug: 'hasar-siniflandirma', stage: 'G1–G2 · Hasar modeli', target: '27–28 Kasım',
-    title: 'Dört sınıf, dengesiz bir dağılım',
-    intro: 'ResNet18’i afet sonrası bina kırpımlarıyla eğittik. Örnekleme kararının ağır ve hafif hasar üzerindeki etkisini ayrı ayrı ölçtük.',
-    facts: [{value:'5.508',label:'Doğrulama binası'},{value:'0,077',label:'Bina düzeyi harmonik F1'},{value:'292 MiB',label:'Tepe PyTorch bellek rezervi'}],
+    number: 3,
+    slug: 'hasar-siniflandirma',
+    title: 'Hasar modeli için iki eğitim denedim',
+    intro: 'ResNet18’i bina kırpımlarıyla eğittim. İlk denemede hasarsız örnekler baskındı, ikinci denemede sınıf başına örnek sayısını sınırladım.',
     sections: [
-      {title:'Gerçek poligonlarla eğitim',paragraphs:[
-        'Hasar sınıflandırıcısı afet sonrası RGB görüntüden çıkarılan 160 × 160 bina kırpımları üzerinde çalışıyor. Kırpımda binanın çevresinde %25 bağlam bırakıldı. Eğitim kaybı sınıf frekanslarına göre ağırlıklandırıldı.',
-        '24.000 örnekli ilk koşu sınıfları ayırmakta zorlandı. İkinci koşuda sınıf başına 6.000 örnek üst sınırı uygulanarak eğitimdeki 3.149 uygun hafif hasar örneğinin tamamı korundu.'
-      ]},
-      {title:'Doğrulama sonucu',paragraphs:[
-        'Seçilen koşu, gerçek bina poligonlarıyla hazırlanmış 5.508 kırpımda harmonik F1’i 0,054’ten 0,077’ye çıkardı. Modelin en zayıf kaldığı alan hasar sınıflarını birbirinden ayırmaktı.',
-        'Checkpoint yeniden yüklenerek ham skorlar ve karışıklık matrisi doğrulandı. Bu ölçüm bina düzeyinde yapıldı. Uçtan uca koşunun piksel skorları ayrıca hesaplandı.'
-      ]},
+      {
+        title: 'Bina görüntülerini nasıl hazırladım?',
+        paragraphs: [
+          'Afet sonrası görüntüden, gerçek bina sınırlarını kullanarak 160 × 160 piksellik parçalar hazırladım. Binanın hemen çevresi de görünsün diye sınırlayıcı kutunun her kenarına yüzde 25 pay bıraktım. Model bu parçaları hasarsız, hafif hasarlı, ağır hasarlı veya yıkılmış olarak ayırmaya çalışıyor.',
+          'İlk eğitimde rastgele 24.000 bina seçtim ve az örneği olan sınıflara kayıp hesabında daha fazla ağırlık verdim. Buna rağmen 19.390 örnek hasarsız, yalnızca 656 örnek hafif hasarlıydı. İkinci eğitimde sınıf başına 6.000 üst sınırı koydum. Eğitimdeki 3.149 uygun hafif hasar örneğinin tamamı bu kez seçildi.',
+        ],
+        figure: {
+          file: '03-ornekleme.png',
+          alt: 'İlk eğitimde sınıf sayıları sırasıyla 19.390, 656, 1.885 ve 2.069. İkinci eğitimde 6.000, 3.149, 6.000 ve 6.000.',
+          caption: 'Rastgele seçimle sınıf başına üst sınır koyduğum koşuda eğitime giren örnekler.',
+        },
+      },
+      {
+        title: 'Hangi sınıfları karıştırdı?',
+        paragraphs: [
+          'İki koşuyu aynı 5.508 bina kırpımında ölçtüm. Sınıfların F1 değerlerini harmonik ortalamayla birleştirdiğimde skor 0,0545’ten 0,0769’a çıktı. Bu ortalamada sınıflardan birinin F1’i çok düşükse toplam skor da düşük kalıyor.',
+          'En çok ağır hasar satırı dikkatimi çekti. 1.245 ağır hasarlı binadan 918’ine hasarsız dedi. Hafif hasarlı örneklerde de 130 binadan yalnızca 12’sini doğru buldu. İkinci eğitimdeki küçük artışa rağmen bu iki sınıfı ayırmak hâlâ zor.',
+        ],
+        figure: {
+          file: '03-karisiklik-matrisi.png',
+          alt: 'Gerçek sınıfların satır, tahminlerin sütun olduğu matris. Ağır hasar satırında 918 hasarsız tahmin karşısında 53 doğru ağır hasar tahmini var.',
+          caption: 'İkinci eğitimin karışıklık matrisi. Hücrede bina sayısı, renkte o satırdaki oran var.',
+        },
+      },
     ],
   },
   {
-    slug: 'lokalizasyon', stage: 'Bina segmentasyonu', target: '25–26 Kasım',
-    title: 'İlk bina maskeleri',
-    intro: '32 yamalık aşırı öğrenme kontrolünden, 320 gerçek görüntüyle eğitilen ilk bina segmentasyon modeline geçtik.',
-    facts: [{value:'0,778',label:'Piksel lokalizasyon F1'},{value:'0,636',label:'Piksel IoU'},{value:'0,40',label:'Bina olasılığı eşiği'}],
+    number: 2,
+    slug: 'lokalizasyon',
+    title: 'Bina maskesi için ilk U-Net’i eğittim',
+    intro: 'Önce 32 görüntü parçasıyla eğitim kodunu kontrol ettim. Sonra 320 görüntüyle eğittiğim modeli ayrı bir sahnede ölçtüm.',
     sections: [
-      {title:'Eğitim hattını sınadık',paragraphs:[
-        'ResNet18 encoder’lı U-Net’i aynı 32 eğitim yamasında tekrar koşturduk. Başlangıçta F1 sıfırdı. En iyi checkpoint aynı yamalarda 0,931’e ulaştı.',
-        'Veri bekleme süresi ölçülünce RGB ve maskeler için yerel önbellek eklendi. Küçük koşunun medyan epoch süresi 0,605 saniyeden 0,351 saniyeye düştü.'
-      ]},
-      {title:'Ayrı bir sahnede ilk sonuç',paragraphs:[
-        'Dondurulmuş eğitim bölümünden 320 görüntü seçildi. Model, ayrılmış Hurricane Florence sahnesindeki 309 görüntüden oluşan validation bölümünde değerlendirildi.',
-        'Beşinci epoch ve 0,40 olasılık eşiği seçildi. 309 tam görüntü maskesi PNG olarak yazıldı. Sayımlar dosyalardan yeniden hesaplandığında kayıtlı skorla eşleşti.'
-      ]},
+      {
+        title: '32 parçayla başladım',
+        paragraphs: [
+          'İlk olarak modelin aynı 32 örneği öğrenip öğrenemediğine baktım. Başta F1 sıfırdı. Aynı parçaları tekrar gösterince 0,931’e ulaştı. Bu skor yalnızca o 32 parçaya ait. Amacım ağın etiketleri ve kayıp hesabını düzgün okuyabildiğini görmekti.',
+          'Görüntüleri her eğitim turunda tekrar açmanın zaman aldığını görünce görüntü ve maskeleri yerel önbelleğe aldım. Küçük denemede bir turun ortanca süresi 0,605 saniyeden 0,351 saniyeye indi.',
+        ],
+      },
+      {
+        title: 'Beş eğitim turunda ne değişti?',
+        paragraphs: [
+          'ResNet18 ile başlayan bir U-Net kullandım. Afet öncesi 320 görüntüyü 256 × 256 piksellik 5.120 parçaya böldüm. Modelden her piksel için bina olasılığı vermesini istedim. Kontrol için Hurricane Florence’tan ayrı tuttuğum 309 görüntüyü kullandım.',
+          'Her turun sonunda dokuz eşikle F1 hesapladım. F1, doğru bulduğum bina piksellerinin yanında hem fazla hem de eksik işaretleri hesaba katıyor. Aşağıdaki çizgide her tur için o turun en iyi eşiğindeki F1 yer alıyor.',
+        ],
+        figure: {
+          file: '02-egitim.png',
+          alt: 'Beş eğitim turu boyunca doğrulama F1 eğrisi. En yüksek değer beşinci turda yaklaşık 0,778.',
+          caption: 'Her tur için denediğim eşikler arasındaki en yüksek doğrulama F1’i. Y ekseni 0,65’ten başlıyor.',
+        },
+      },
+      {
+        title: '0,40 eşiğini neden seçtim?',
+        paragraphs: [
+          'Beşinci turun ağırlıklarında en iyi F1 değeri 0,40 eşiğinde 0,7778 çıktı. Aynı ağırlıklar ve 0,50 eşikle skor 0,7765’ti. Aradaki fark küçük. Bu seçimi yaptığım sahne, skoru ölçtüğüm sahneyle aynı.',
+          'Seçtiğim ağırlıkları tekrar yükledim, 309 tam görüntü için bina maskelerini yazdım ve PNG’lerden piksel sayımlarını yeniden yaptım. Kayıtlı sonuçlarla eşleşti.',
+        ],
+        figure: {
+          file: '02-esikler.png',
+          alt: 'Beşinci eğitim turunda 0,30 ile 0,70 arasındaki dokuz eşik. En yüksek piksel F1 0,40 eşiğinde.',
+          caption: 'Tek ağırlık dosyasıyla dokuz farklı eşik denedim. Y ekseni 0,70’ten başlıyor.',
+        },
+      },
     ],
   },
   {
-    slug: 'veri-ve-bolme', stage: 'G0 · Veri', target: '24 Kasım',
-    title: 'Veriyi bölmeden önce denetim',
-    intro: 'xBD görüntü çiftlerini, bina poligonlarını ve hedef maskelerini doğruladık. Sahne gruplarını koruyan bir veri bölmesini eğitimden önce dondurduk.',
-    facts: [{value:'2.799',label:'Görüntü çifti'},{value:'10',label:'Afet olayı'},{value:'14',label:'Bağımsız sahne grubu'}],
+    number: 1,
+    slug: 'veri-ve-bolme',
+    title: 'xBD verisini kontrol edip böldüm',
+    intro: 'Afet öncesi ve sonrası 2.799 görüntü çiftini açtım, etiketlerini kontrol ettim ve aynı sahneye ait görüntüleri bir arada tuttum.',
     sections: [
-      {title:'Kaynak dosyalarının kontrolü',paragraphs:[
-        'xView2 Challenge train arşivinin özeti doğrulandı. 5.598 RGB görüntü, bunların anotasyonları ve hedef maskeleri eşleştirildi. Kaynak dosya özetleri manifestte saklandı.',
-        'Poligon rasterizasyonumuz ve arşivdeki hedef PNG’ler piksel düzeyinde karşılaştırıldı. Resmî puanlamada paketin verdiği hedef PNG’ler kullanıldı.'
-      ]},
-      {title:'Görülmemiş bir afet',paragraphs:[
-        'Hurricane Michael, görülmemiş afet testi için tamamen ayrıldı. Aynı afet türünden başka sahneler eğitimde kaldı. Eğitim, validation, kalibrasyon ve ID testindeki gruplar eşleşen görüntü ya da mekân anahtarları taşımıyor.',
-        'M0 ölçümleri Hurricane Florence validation sahnesine ait. ID ve OOD testleri, model ile kalibrasyon kararları dondurulduktan sonra çalıştırılacak.'
-      ]},
+      {
+        title: 'Arşivden hangi dosyalar çıktı?',
+        paragraphs: [
+          'xView2’nin eğitim paketini kullandım. Bir görüntü çiftinde afet öncesi ve sonrası iki PNG var. JSON dosyaları bina sınırlarını ve hasar etiketini, hedef PNG’ler ise eğitimde kullanılacak piksel değerlerini taşıyor. Dosya adlarını eşleştirip 5.598 görüntünün açıldığını ve hepsinin 1.024 × 1.024 piksel olduğunu kontrol ettim.',
+          'Bina sınırlarını kendim de piksel maskesine çevirdim. İki yöntem arasında piksellerin yaklaşık yüzde 0,37’sinde fark vardı. xView2 ile aynı koşulda puan almak için değerlendirmede arşivin kendi hedef maskelerini kullandım.',
+          'Etiketleri saydığımda hasarsız binaların açık ara fazla olduğunu gördüm. Dört eğitim sınıfının yanında 2.993 sınıfsız kayıt vardı. Bunları hasar sınıflandırıcısının dört sınıfına katmadım.',
+        ],
+        figure: {
+          file: '01-etiketler.png',
+          alt: '117.426 hasarsız, 14.980 hafif hasarlı, 14.161 ağır hasarlı, 13.227 yıkılmış ve 2.993 sınıfsız etiket.',
+          caption: 'Eğitim paketini bölmeden önce saydığım bina etiketleri.',
+        },
+      },
+      {
+        title: 'Aynı sahneyi iki bölüme koymamaya çalıştım',
+        paragraphs: [
+          'Görüntüleri tek tek karıştırmak yerine kaynak çekim kimliklerini ve mevcut konum bilgilerini kullandım. 14 sahne grubu oluşturdum. Benzer parçaların hem eğitimde hem testte bulunmasını önlemek için her grubu bir bütün olarak atadım.',
+          'Yeni olay testi için Hurricane Michael’ı tamamen ayırdım. Benzer türde başka afetler eğitimde kaldı. Grafikte ID testi, eğitimde de farklı sahnesi bulunan bir olaydan geliyor. OOD testi ise eğitimde hiç kullanılmayan olay. Bu ayrım eğitim başlamadan önce sabitlendi.',
+        ],
+        figure: {
+          file: '01-veri-bolmesi.png',
+          alt: 'Eğitim 1.691, doğrulama 309, kalibrasyon 233, ID testi 223 ve OOD testi 343 görüntü çifti.',
+          caption: 'Bir görüntü çifti yalnızca bir bölüme ait. Toplam 2.799 çift var.',
+        },
+      },
     ],
   },
 ];
-
-export const latest = journal[0];

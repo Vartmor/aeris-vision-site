@@ -1,16 +1,25 @@
 ---
 import { href } from '../lib/url';
 import type { Entry } from '../content/journal';
-const { entries } = Astro.props as {entries: Entry[]};
+
+const { entries } = Astro.props as { entries: Entry[] };
 ---
-<ol class="entry-list">
-  {entries.map((entry) => (
-    <li>
-      <a class="entry-row" href={href(`gunluk/${entry.slug}/`)}>
-        <div><span class="entry-date">{entry.target} hedefi</span><span class="entry-stage">{entry.stage}</span></div>
-        <strong>{entry.title}</strong>
-        <span class="entry-arrow" aria-hidden="true">↗</span>
-      </a>
-    </li>
-  ))}
+
+<ol class="entry-list" reversed role="list">
+  {entries.map((entry) => {
+    const preview = entry.sections.find((section) => section.figure)?.figure;
+    return (
+      <li value={entry.number}>
+        <a class="entry-row" href={href(`gunluk/${entry.slug}/`)}>
+          <span class="entry-number">{entry.number}</span>
+          <div class="entry-copy">
+            <strong>{entry.title}</strong>
+            <p>{entry.intro}</p>
+          </div>
+          {preview && <img src={href(`media/gunluk/${preview.file}`)} width="1008" height="576"
+                           loading="lazy" decoding="async" alt="" />}
+        </a>
+      </li>
+    );
+  })}
 </ol>
