@@ -29,3 +29,5 @@ Geniş kadraj ve yöntem örneği, Narrowsburg ve Delaware Nehri çevresinin USD
 Yöntem görselindeki bina sınırları ve inceleme işaretleri gösterim amacıyla elle çizildi. [USGS NAIP kaynak ve kullanım bilgisi](https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer)
 
 Yazı tiplerinin lisansları `public/licenses/` klasöründe.
+
+Profil bağlantılarında GitHub ve LinkedIn’in marka paketlerindeki beyaz simgeler kullanılır. [GitHub marka paketi](https://brand.github.com/foundations/logo) · [LinkedIn marka paketi](https://brand.linkedin.com/downloads)
