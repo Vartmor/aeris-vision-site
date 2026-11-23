@@ -22,7 +22,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const image = new URL(href('media/share.png'), Astro.site);
 ---
 <!doctype html>
-<html lang="tr" data-type="software" data-motion="quiet" data-radius="sharp">
+<html lang="tr" data-type="software">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
@@ -62,7 +62,7 @@ const image = new URL(href('media/share.png'), Astro.site);
       <a class="header-cta" href={href('gunluk/m0-cekirdek/')}>M0 raporu <span aria-hidden="true">↗</span></a>
     </div>
   </header>
-  <main id="icerik"><slot /></main>
+  <main id="icerik" tabindex="-1"><slot /></main>
   <footer class="site-footer">
     <div class="wrap">
       <div class="footer-main">

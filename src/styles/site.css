@@ -12,7 +12,7 @@
   color-scheme: light;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: var(--archive-paper); }
+html { background: var(--archive-paper); }
 body { margin: 0; color: var(--aeris-text); background: var(--aeris-background); font: 400 17px/1.55 var(--aeris-font-body); }
 img { display: block; max-width: 100%; }
 a { color: inherit; text-decoration: none; }
@@ -163,6 +163,7 @@ h1, h2, h3 { font-family: var(--aeris-font-display); font-weight: 800; }
 .frame-header i { width: 7px; height: 7px; background: var(--archive-warm); }
 .compare-scene { position: relative; isolation: isolate; overflow: hidden; aspect-ratio: 4/3; }
 .compare-scene:focus-within { outline: 2px solid var(--archive-warm); outline-offset: -2px; }
+.compare-scene:focus-within .compare-divider span { outline: 3px solid var(--archive-warm); outline-offset: 3px; }
 .compare-scene img { width: 100%; height: 100%; object-fit: fill; }
 .compare-annotation { position: absolute; inset: 0; pointer-events: none; background: #281a2448; }
 .compare-annotation svg { display: block; width: 100%; height: 100%; }
@@ -180,14 +181,17 @@ h1, h2, h3 { font-family: var(--aeris-font-display); font-weight: 800; }
   width: 44px; height: 44px; border-radius: 50%;
   display: grid; place-items: center; background: var(--archive-paper); color: var(--archive-deep); font-weight: 700;
 }
-.compare-input { position: absolute; inset: 0; cursor: ew-resize; opacity: 0; margin: 0; width: 100%; height: 100%; }
+.compare-input {
+  position: absolute; top: 50%; left: 0; transform: translateY(-50%); cursor: ew-resize;
+  opacity: 0; margin: 0; width: 100%; height: 56px; touch-action: pan-y;
+}
 .frame-legend { justify-content: start; flex-wrap: wrap; column-gap: 20px; }
 .frame-legend b { width: 13px; height: 10px; border: 1px solid #edc09b; }
 .frame-legend .dashed { border: 1px dashed #ffb6c1; }
 
 .result-section { background: #fbf5f1; }
 .result-section .section-heading { margin-bottom: 25px; }
-.section-summary { color: var(--aeris-textSecondary); max-width: 62ch; font-size: 1.12rem; margin-bottom: 42px; }
+.section-summary { max-width: 62ch; font-size: 1.12rem; margin-bottom: 42px; }
 .result-grid { display: grid; grid-template-columns: 1.32fr .65fr; gap: clamp(28px, 7vw, 105px); align-items: stretch; }
 .metric-list { border-top: 1px solid var(--aeris-border); }
 .metric-list > div { display: grid; grid-template-columns: 1fr auto; gap: 7px 14px; align-content: center; align-items: center; min-height: 81px; padding-block: 8px; border-bottom: 1px solid var(--aeris-border); }

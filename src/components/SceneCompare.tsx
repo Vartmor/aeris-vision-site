@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 
 const roofs = [
@@ -14,6 +14,7 @@ const roofs = [
 ];
 
 export default function SceneCompare({ image }: { image: string }) {
+  const sliderId = useId();
   const [value, setValue] = useState(54);
   const progress = useMotionValue(54);
   const clipPath = useTransform(progress, (percent) => `inset(0 0 0 ${percent}%)`);
@@ -23,7 +24,7 @@ export default function SceneCompare({ image }: { image: string }) {
     <div className="compare-frame" data-visual>
       <div className="frame-header">
         <span><i aria-hidden="true" /> Temsili uydu sahnesi</span>
-        <span className="frame-help" id="compare-help">Ayırıcıyı sürükle</span>
+        <label htmlFor={sliderId}>Görüntü ayırıcı</label>
       </div>
       <div className="compare-scene">
         <img src={image} width="1448" height="1086" loading="lazy" alt="Yol boyunca dağılmış binaları gösteren temsili uydu görüntüsü" />
@@ -37,8 +38,7 @@ export default function SceneCompare({ image }: { image: string }) {
         <motion.div className="compare-divider" style={{ left }} aria-hidden="true">
           <span>‹ ›</span>
         </motion.div>
-        <input className="compare-input" type="range" min="0" max="100" value={value}
-          aria-label="Görüntü ve bina adayları arasındaki ayırıcı" aria-describedby="compare-help"
+        <input id={sliderId} className="compare-input" type="range" min="0" max="100" value={value}
           aria-valuetext={`Ayırıcı yüzde ${value}`}
           onChange={(event) => {
             const next = Number(event.target.value);
