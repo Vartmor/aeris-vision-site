@@ -13,7 +13,7 @@ const roofs = [
   ['1157,449 1328,397 1364,472 1190,548', 'ordinary'],
 ];
 
-export default function SceneCompare({ image }: { image: string }) {
+export default function SceneCompare({ image, compactImage }: { image: string; compactImage: string }) {
   const sliderId = useId();
   const [value, setValue] = useState(54);
   const progress = useMotionValue(54);
@@ -27,7 +27,11 @@ export default function SceneCompare({ image }: { image: string }) {
         <label htmlFor={sliderId}>Görüntü ayırıcı</label>
       </div>
       <div className="compare-scene">
-        <img src={image} width="1448" height="1086" loading="lazy" alt="Yol boyunca dağılmış binaları gösteren temsili uydu görüntüsü" />
+        <img src={image}
+          srcSet={`${compactImage} 724w, ${image} 1448w`}
+          sizes="(max-width: 740px) calc(100vw - max(44px, 10vw)), (max-width: 900px) calc(58vw - 22px), (max-width: 1422px) 53vw, 750px"
+          width="1448" height="1086" loading="lazy" decoding="async"
+          alt="Yol boyunca dağılmış binaları gösteren temsili uydu görüntüsü" />
         <motion.div className="compare-annotation" style={{ clipPath }} aria-hidden="true">
           <svg viewBox="0 0 1448 1086" preserveAspectRatio="none" focusable="false">
             {roofs.map(([outline, kind]) => <polygon key={outline} points={outline} className={kind} />)}
