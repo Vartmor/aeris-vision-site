@@ -16,13 +16,13 @@ const metrics = [
 ---
 <Base title="AERIS VISION · Field Archive" description="Uydu görüntüleriyle afet sonrası bina hasarını araştıran AERIS VISION projesinin görsel günlüğü." home>
   <section class="hero" data-aeris-theme="dark" data-enter aria-label="AERIS VISION">
-    <HeroScene image={href('media/river-valley.webp')} client:load />
+    <HeroScene image={href('media/narrowsburg-delaware.webp')} client:load />
     <div class="hero-wash" aria-hidden="true"></div>
     <div class="wrap hero-inner">
       <HeroCopy journalUrl={href('gunluk/')} client:load />
       <div class="hero-foot">
         <a href={href('gunluk/m0-cekirdek/')}><span class="annotation-square" aria-hidden="true"></span> M0 · Çalışan çekirdek</a>
-        <span>Temsili uydu görseli</span>
+        <a href="https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer">Hava fotoğrafı · USDA NAIP</a>
       </div>
     </div>
   </section>
@@ -59,7 +59,7 @@ const metrics = [
             <div><dt>Doğrulama</dt><dd>Adayları gerçek bina sınırlarıyla eşleştirip kaçırılan ve birleşen binaları sayarız.</dd></div>
           </dl>
         </div>
-        <SceneCompare image={href('media/field-scene.webp')} compactImage={href('media/field-scene-724.webp')} client:visible />
+        <SceneCompare image={href('media/narrowsburg-detail.webp')} compactImage={href('media/narrowsburg-detail-724.webp')} client:visible />
       </div>
     </div>
   </section>

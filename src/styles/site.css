@@ -286,7 +286,7 @@ h1, h2, h3 { font-family: var(--aeris-font-display); font-weight: 800; }
   .hero-inner { padding-block: 108px 104px; }
   .hero h1 { font-size: clamp(2.95rem, 12.3vw, 5.25rem); }
   .hero-description { max-width: 35ch; }
-  .hero-image img { object-position: 43% center; }
+  .hero-image img { object-position: 72% center; }
   .hero-wash { background: linear-gradient(90deg,#20151edc,#20151e68),linear-gradient(0deg,#20151ef2,#20151e35 55%,#20151e20); }
   .hero-actions { gap: 8px 22px; margin-top: 24px; }
   .hero-foot { font-size: .67rem; min-height: 61px; }

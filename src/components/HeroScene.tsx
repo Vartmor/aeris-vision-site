@@ -9,7 +9,7 @@ export default function HeroScene({ image }: { image: string }) {
 
   return (
     <div className="hero-image" ref={frame} aria-hidden="true">
-      <motion.img src={image} alt="" width="1672" height="941" fetchPriority="high"
+      <motion.img src={image} alt="" width="1920" height="1080" fetchPriority="high"
         style={{ y: reducedMotion ? 0 : offset }} />
     </div>
   );
